@@ -15,8 +15,6 @@ app.get("/ping", (req: Request, res: Response) => {
   res.send("Pong");
 });
 
-console.log(categoryRoutes);
-
 app.use("/user", userRoutes);
 app.use("/category", categoryRoutes);
 
