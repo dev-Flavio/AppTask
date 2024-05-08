@@ -2,6 +2,7 @@ import { Response } from "express";
 import Category from "../models/category-model";
 import { ICategory } from "../types";
 import { AuthRequest } from "../middleware";
+import Task from "../models/task-model";
 
 export const getAllCategories = async (
   request: AuthRequest,
@@ -14,6 +15,24 @@ export const getAllCategories = async (
   } catch (error) {
     console.log("error in getAllCategories", error);
     response.send({ error: "Something went wrong" });
+    throw error;
+  }
+};
+
+export const getCategoryById = async (
+  request: AuthRequest,
+  response: Response
+) => {
+  try {
+    const { user } = request;
+    const { id } = request.params;
+    const category = await Category.findOne({
+      _id: id,
+    });
+    return response.send(category);
+  } catch (error) {
+    response.send({ error: "Something went wrong" });
+    console.log("error in getAllCategories", error);
     throw error;
   }
 };
@@ -36,6 +55,52 @@ export const createCategory = async (
   } catch (error) {
     console.log("error in createCategory", error);
     response.send({ error: "Something went wrong" });
+    throw error;
+  }
+};
+
+export const deleteCategory = async (
+  request: AuthRequest,
+  response: Response
+) => {
+  try {
+    const { id } = request.params;
+    await Task.deleteMany({
+      categoryId: id,
+    });
+    const category = await Category.deleteOne({
+      _id: id,
+    });
+    response.send({ message: "Category deleted successfully" });
+  } catch (error) {
+    response.send({ error: "Error in deleting the category" });
+    throw error;
+  }
+};
+
+export const updateCategory = async (
+  request: AuthRequest,
+  response: Response
+) => {
+  try {
+    const { _id, color, icon, isEditable, name }: ICategory = request.body;
+    await Category.updateOne(
+      {
+        _id,
+      },
+      {
+        $set: {
+          name,
+          color,
+          icon,
+          isEditable,
+        },
+      }
+    );
+    response.send({ message: "Category updated successfully" });
+  } catch (error) {
+    console.log("error in updateCategory", error);
+    response.send({ error: "Error in updating the category" });
     throw error;
   }
 };

@@ -17,8 +17,8 @@ app.get("/ping", (req: Request, res: Response) => {
 
 console.log(categoryRoutes);
 
-app.use("/user", userRoutes);
-app.use("/category", categoryRoutes);
+app.use("/users", userRoutes);
+app.use("/categories", categoryRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
